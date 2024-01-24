@@ -1,5 +1,5 @@
 const mongoose=require('mongoose')
-
+// create db schema
 const userSchema=mongoose.Schema({
     username:{
         type:String,
@@ -10,4 +10,4 @@ const userSchema=mongoose.Schema({
          required:[true,"password required"]
     }
 })
-module.exports=mongoose.model('userSchema',userSchema)
+module.exports=mongoose.model('User',userSchema)
