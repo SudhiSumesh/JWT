@@ -35,15 +35,17 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(401).json({ error: "Authentification faild" });
-    } 
-    const passwordMatch=await bcrypt.compare(password,user.password)
-    if(!passwordMatch){
-        return res.status(401).json({
-            error:"Authentification faild"
-        })
     }
-    const token=jwt.sign({userId:user._id},"secret key",{expiresIn:'1h'})
-    res.status(200).json({token})
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({
+        error: "Authentification faild",
+      });
+    }
+    const token = jwt.sign({ userId: user._id }, "secret key", {
+      expiresIn: "1h",
+    });
+    res.status(200).json({ token });
   } catch (error) {
     res.status(500).json({
       message: "faild",
@@ -51,27 +53,28 @@ router.post("/login", async (req, res) => {
     console.log(error);
   }
 });
-router.post('/forgotpassword',async(req,res)=>{
+router.post("/forgotpassword", async (req, res) => {
   try {
-    const {username,password}=req.body
+    const { username, password } = req.body;
 
-  const user =await User.findOne({username})
-  const hashedPassword = await bcrypt.hash(password, 10);
-  if(!user){
-    return res.status(401).json({error:"user not exist"})
-  }
-const updatePassword=await User.findByIdAndUpdate(user._id,{password:hashedPassword})
-if(updatePassword){
-  res.status(200).json({
-    message:`password updated `
-  })
-}
-  } catch (error) {
+    const user = await User.findOne({ username });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    if (!user) {
+      return res.status(401).json({ error: "user not exist" });
+    }
+    const updatePassword = await User.findByIdAndUpdate(user._id, {
+      password: hashedPassword,
+    });
+    if (updatePassword) {
+      res.status(200).json({
+        message: `password updated `,
+      });
+    }
+  } catch (err) {
     res.status(500).json({
       message: "faild",
     });
-    console.log(error);
+    console.log(err);
   }
-  
-})
+});
 module.exports = router;
